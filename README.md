@@ -30,8 +30,6 @@ It’s not just translation — it’s **communication empowerment**.
 
 ---
 
-## 🎯 Project Title: "SignVision: Bridging Audio to Sign Language Through AI"
-
 ### 📌 Problem Statement
 Millions of people around the world are deaf or hard of hearing and may rely on sign language as their primary mode of communication. However, the majority of media content—podcasts, videos, interviews, news clips—are audio-based or contain audio components without accessibility options. Subtitles help, but they don't fully bridge the gap for those who are fluent in sign language, as it’s a distinct language with its own grammar and structure.
 
