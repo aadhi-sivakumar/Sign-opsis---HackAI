@@ -3,63 +3,74 @@ from google.cloud import speech
 from langgraph.graph import StateGraph, MessagesState
 from langgraph.graph import START, END
 
-# Function to transcribe audio using Google Speech-to-Text
+import spacy
+
+# Load English language model
+nlp = spacy.load("en_core_web_sm")
+
+def english_to_asl_structure(text):
+    doc = nlp(text)
+    
+    # Extract components
+    time_markers = []
+    topics = []
+    verbs = []
+    objects = []
+    others = []
+    
+    # Identify negation
+    negation = False
+    
+    for token in doc:
+        # Check for negation
+        if token.dep_ == "neg":
+            negation = True
+            continue
+            
+        # Time expressions (simplified)
+        if token.ent_type_ == "DATE" or token.ent_type_ == "TIME" or token.text.lower() in ["today", "tomorrow", "yesterday", "now", "later"]:
+            time_markers.append(token.text.upper())
+        
+        # Skip articles and "to be" verbs
+        elif token.pos_ == "DET" or (token.lemma_ == "be" and token.pos_ == "AUX"):
+            continue
+            
+        # Identify subjects/topics
+        elif token.dep_ in ["nsubj", "nsubjpass"]:
+            topics.append(token.text.upper())
+            
+        # Identify main verbs
+        elif token.pos_ == "VERB":
+            verbs.append(token.text.upper())
+            
+        # Identify objects
+        elif token.dep_ in ["dobj", "pobj"]:
+            objects.append(token.text.upper())
+            
+        # Other elements
+        elif token.pos_ not in ["PUNCT", "ADP", "PART"]:
+            others.append(token.text.upper())
+    
+    # Construct ASL structure: TIME + TOPIC + OBJECT + VERB + NOT (if negation)
+    asl_components = time_markers + topics + objects + verbs
+    
+    if negation:
+        asl_components.append("NOT")
+        
+    return " ".join(asl_components)
+
+
+
 def transcribe_audio(state):
-#     """Transcribe audio using Google Cloud Speech-to-Text API"""
-#     # Get audio data from state
     audio_file_path = state.get("messages")[0].content
     
     model = whisper.load_model("base")
-
-# load audio and pad/trim it to fit 30 seconds
-    audio = whisper.load_audio(audio_file_path)
-    audio = whisper.pad_or_trim(audio)
-
-    # make log-Mel spectrogram and move to the same device as the model
-    mel = whisper.log_mel_spectrogram(audio, n_mels=model.dims.n_mels).to(model.device)
-
-    # detect the spoken language
-    _, probs = model.detect_language(mel)
-    print(f"Detected language: {max(probs, key=probs.get)}")
-
-    # decode the audio
-    options = whisper.DecodingOptions()
-    result = whisper.decode(model, mel, options)
-    print(result.text)
-    # Initialize the client
-    # client = speech.SpeechClient()
-    
-    # # Read the audio file
-    # with open(audio_file_path, "rb") as audio_file:
-    #     content = audio_file.read()
-    
-    # # Configure the recognition settings
-    # config = speech.RecognitionConfig(
-    #     encoding=speech.RecognitionConfig.AudioEncoding.LINEAR16,
-    #     sample_rate_hertz=16000,
-    #     language_code="en-US",
-    #     enable_automatic_punctuation=True,
-    #     audio_channel_count=2
-    # )
-    
-    # # Create the audio object
-    # audio = speech.RecognitionAudio(content=content)
-    
-    # # Perform the transcription
-    # response = client.recognize(config=config, audio=audio)
-    
-    # # Process and return the response
-    # transcription = ""
-    # for result in response.results:
-    #     transcription += result.alternatives[0].transcript
-    
-    # Extract the 
-    # Update state with transcription
-    state["messages"].append({"role": "user", "content": result.text})
+    transcription = model.transcribe(audio_file_path)
+    asl_structure = english_to_asl_structure(transcription["text"])
+    state["messages"].append({"role": "user", "content": asl_structure})
 
     return state
 
-# Define your graph
 graph = StateGraph(MessagesState)
 
 # Add nodes for audio processing and other tasks
@@ -74,6 +85,6 @@ compiled_graph = graph.compile()
 
 result = compiled_graph.invoke({"messages": "C:\\Dev\\HackAI\\backend\\test.wav"})
 
-print(result)
+print(result["messages"][1].content)
 
 
