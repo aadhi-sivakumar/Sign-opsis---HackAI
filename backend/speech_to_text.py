@@ -8,7 +8,8 @@ import spacy
 # Load English language model
 nlp = spacy.load("en_core_web_sm")
 
-def english_to_asl_structure(text):
+def english_to_asl_structure(state):
+    text = state.get("messages")[-1].content
     doc = nlp(text)
     
     # Extract components
@@ -57,17 +58,18 @@ def english_to_asl_structure(text):
     if negation:
         asl_components.append("NOT")
         
-    return " ".join(asl_components)
+    asl_structure = " ".join(asl_components)
+    state["messages"].append({"role": "user", "content": asl_structure})
 
+    return state
 
 
 def transcribe_audio(state):
-    audio_file_path = state.get("messages")[0].content
+    audio_file_path = state.get("messages")[-1].content
     
     model = whisper.load_model("base")
     transcription = model.transcribe(audio_file_path)
-    asl_structure = english_to_asl_structure(transcription["text"])
-    state["messages"].append({"role": "user", "content": asl_structure})
+    state["messages"].append({"role": "user", "content": transcription["text"]})
 
     return state
 
@@ -75,16 +77,17 @@ graph = StateGraph(MessagesState)
 
 # Add nodes for audio processing and other tasks
 graph.add_node("transcribe_audio", transcribe_audio)
+graph.add_node("asl_structure", english_to_asl_structure)
 
 # Add more edges as needed for your application flow
 graph.add_edge(START, "transcribe_audio")
-graph.add_edge("transcribe_audio", END)
+graph.add_edge("transcribe_audio", "asl_structure")
+graph.add_edge("asl_structure", END)
 
 # Compile the graph
 compiled_graph = graph.compile()
 
 result = compiled_graph.invoke({"messages": "C:\\Dev\\HackAI\\backend\\test.wav"})
-
-print(result["messages"][1].content)
+print(result["messages"][-1].content)
 
 
