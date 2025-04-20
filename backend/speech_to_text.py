@@ -105,7 +105,6 @@ import numpy as np
 image_width = 800
 image_height = 750
 
-
 def draw_hand(image, coordinates):
     color = (0, 0, 0)
     if len(coordinates) == 0:
@@ -133,6 +132,9 @@ def draw_hand(image, coordinates):
     cv2.line(image, (int(image_width*coordinates['19'][0]), int(image_height*coordinates['19'][1])), (int(image_width*coordinates['20'][0]), int(image_height*coordinates['20'][1])), color, 5)
 
 
+
+out = cv2.VideoWriter('filename.avi', cv2.VideoWriter_fourcc(*'MJPG'), 20, (image_height, image_width))
+
 for word_cord in coordinates:
     if word_cord[0].get('Left Hand Coordinates') != None:
         for cord in word_cord:
@@ -147,6 +149,7 @@ for word_cord in coordinates:
                 for c in unnorm_coord2:
                     cv2.circle(image, (int(c[0]), int(c[1])), 10, (0, 0, 0), -1)
                 draw_hand(image, coord2)
+                out.write(image)
                 cv2.imshow("img", image)
                 key = cv2.waitKey(50)
     else:
@@ -156,9 +159,12 @@ for word_cord in coordinates:
             for c in unnorm_coord:
                 cv2.circle(image, (int(c[0]), int(c[1])), 10, (0, 0, 0), -1)
             draw_hand(image, let_cord)
+            out.write(image)
+            cv2.imshow("img", image)
             key = cv2.waitKey(50)
+        key = cv2.waitKey(50)
 
-
+out.release()
 cv2.destroyAllWindows()
 
 
