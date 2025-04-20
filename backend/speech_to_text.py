@@ -96,9 +96,6 @@ graph.add_edge("asl_structure", END)
 # Compile the graph
 compiled_graph = graph.compile()
 
-result = compiled_graph.invoke({"messages": "C:\\Dev\\HackAI\\backend\\test.wav"})
-coordinates = get_asl_coordinates(result["messages"][-1].content)
-
 import cv2
 import numpy as np
 
@@ -132,39 +129,42 @@ def draw_hand(image, coordinates):
     cv2.line(image, (int(image_width*coordinates['19'][0]), int(image_height*coordinates['19'][1])), (int(image_width*coordinates['20'][0]), int(image_height*coordinates['20'][1])), color, 5)
 
 
+def audio_to_asl(file_path):
+    result = compiled_graph.invoke({"messages": file_path})
+    coordinates = get_asl_coordinates(result["messages"][-1].content)
+    out = cv2.VideoWriter('filename.avi', cv2.VideoWriter_fourcc(*'MJPG'), 20, (image_height, image_width))
 
-out = cv2.VideoWriter('filename.avi', cv2.VideoWriter_fourcc(*'MJPG'), 20, (image_height, image_width))
-
-for word_cord in coordinates:
-    if word_cord[0].get('Left Hand Coordinates') != None:
-        for cord in word_cord:
+    for word_cord in coordinates:
+        if word_cord[0].get('Left Hand Coordinates') != None:
+            for cord in word_cord:
+                    image = np.ones((image_width, image_height, 3), dtype=np.uint8)*255
+                    coord1 = cord["Left Hand Coordinates"]
+                    unnorm_coord1 = [(image_width*c[0], image_height*c[1]) for c in list(coord1.values())]
+                    coord2 = cord["Right Hand Coordinates"]
+                    unnorm_coord2 = [(image_width*c[0], image_height*c[1]) for c in list(coord2.values())]
+                    for c in unnorm_coord1:
+                        cv2.circle(image, (int(c[0]), int(c[1])), 10, (0, 0, 0), -1)
+                    draw_hand(image, coord1)
+                    for c in unnorm_coord2:
+                        cv2.circle(image, (int(c[0]), int(c[1])), 10, (0, 0, 0), -1)
+                    draw_hand(image, coord2)
+                    out.write(image)
+                    #cv2.imshow("img", image)
+                    key = cv2.waitKey(50)
+        else:
+            for let_cord in word_cord:
                 image = np.ones((image_width, image_height, 3), dtype=np.uint8)*255
-                coord1 = cord["Left Hand Coordinates"]
-                unnorm_coord1 = [(image_width*c[0], image_height*c[1]) for c in list(coord1.values())]
-                coord2 = cord["Right Hand Coordinates"]
-                unnorm_coord2 = [(image_width*c[0], image_height*c[1]) for c in list(coord2.values())]
-                for c in unnorm_coord1:
+                unnorm_coord = [(image_width*c[0], image_height*c[1]) for c in list(let_cord.values())]
+                for c in unnorm_coord:
                     cv2.circle(image, (int(c[0]), int(c[1])), 10, (0, 0, 0), -1)
-                draw_hand(image, coord1)
-                for c in unnorm_coord2:
-                    cv2.circle(image, (int(c[0]), int(c[1])), 10, (0, 0, 0), -1)
-                draw_hand(image, coord2)
+                draw_hand(image, let_cord)
                 out.write(image)
-                cv2.imshow("img", image)
-                key = cv2.waitKey(50)
-    else:
-        for let_cord in word_cord:
-            image = np.ones((image_width, image_height, 3), dtype=np.uint8)*255
-            unnorm_coord = [(image_width*c[0], image_height*c[1]) for c in list(let_cord.values())]
-            for c in unnorm_coord:
-                cv2.circle(image, (int(c[0]), int(c[1])), 10, (0, 0, 0), -1)
-            draw_hand(image, let_cord)
-            out.write(image)
-            cv2.imshow("img", image)
-            key = cv2.waitKey(300)
-        key = cv2.waitKey(50)
+                #cv2.imshow("img", image)
+                key = cv2.waitKey(300)
+            key = cv2.waitKey(50)
 
-out.release()
-cv2.destroyAllWindows()
+    out.release()
+    cv2.destroyAllWindows()
 
-
+if __name__ == "__main__":
+    audio_to_asl("C:\\Dev\\HackAI\\backend\\test.wav")
