@@ -161,7 +161,7 @@ for word_cord in coordinates:
             draw_hand(image, let_cord)
             out.write(image)
             cv2.imshow("img", image)
-            key = cv2.waitKey(50)
+            key = cv2.waitKey(300)
         key = cv2.waitKey(50)
 
 out.release()
