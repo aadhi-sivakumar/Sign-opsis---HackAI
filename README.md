@@ -1,13 +1,13 @@
-# 🤟 SignVision: Bridging Audio to Sign Language Through AI 🌍📚
+# 🤟 Sign-opsis: Bridging Audio to Sign Language Through AI 🌍📚
 
 ![HackAI Banner](https://img.shields.io/badge/HackAI-2025-blue.svg)  
 *General Tracks: Green Trails (Sustainability/For Good) & Learnin’ the Ropes (Education)*
 
 ---
 
-## ✨ What is SignVision?
+## ✨ What is Sign-opsis?
 
-**SignVision** is an AI-powered tool that **converts audio** from videos, podcasts, and live streams into **sign language** using **AI-powered avatars**. By providing real-time **visual translation**, it makes spoken content accessible to the **Deaf and Hard-of-Hearing (DHH) community**, enhancing inclusion in education, entertainment, and beyond.
+**Sign-opsis** is an AI-powered tool that **converts audio** from videos, podcasts, and live streams into **sign language** using **AI-powered avatars**. By providing real-time **visual translation**, it makes spoken content accessible to the **Deaf and Hard-of-Hearing (DHH) community**, enhancing inclusion in education, entertainment, and beyond.
 
 It’s not just translation — it’s **communication empowerment**.
 
@@ -15,8 +15,8 @@ It’s not just translation — it’s **communication empowerment**.
 
 ## 💡 Challenge Statements
 
-- 🌍 **Green Trails**: By fostering educational equity and inclusion, **SignVision** helps advance **sustainable development goal #4 (Quality Education)** and #10 (Reduced Inequalities).
-- 🎓 **Learnin’ the Ropes**: For the DHH community, SignVision ensures access to **audio-based content** in real-time, empowering them to participate in conversations and learning environments globally.
+- 🌍 **Green Trails**: By fostering educational equity and inclusion, **Sign-opsis** helps advance **sustainable development goal #4 (Quality Education)** and #10 (Reduced Inequalities).
+- 🎓 **Learnin’ the Ropes**: For the DHH community, Sign-opsis ensures access to **audio-based content** in real-time, empowering them to participate in conversations and learning environments globally.
 
 ---
 
@@ -34,7 +34,7 @@ It’s not just translation — it’s **communication empowerment**.
 Millions of people around the world are deaf or hard of hearing and may rely on sign language as their primary mode of communication. However, the majority of media content—podcasts, videos, interviews, news clips—are audio-based or contain audio components without accessibility options. Subtitles help, but they don't fully bridge the gap for those who are fluent in sign language, as it’s a distinct language with its own grammar and structure.
 
 ### 💡 The Idea
-Develop a tool called **SignVision** that automatically converts the audio from a video (or just an audio file) into a sign language video, where a 3D animated avatar or pre-recorded human interpreter performs sign language synchronized with the audio content.
+Develop a tool called **Sign-opsis** that automatically converts the audio from a video (or just an audio file) into a sign language video, where a 3D animated avatar or pre-recorded human interpreter performs sign language synchronized with the audio content.
 
 ### 🎯 Use Case / Impact
 - **Deaf communities** can access spoken content in their native language (ASL, BSL, etc.).
