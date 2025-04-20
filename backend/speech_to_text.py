@@ -1,5 +1,4 @@
 import whisper
-from google.cloud import speech
 from langgraph.graph import StateGraph, MessagesState
 from langgraph.graph import START, END
 
