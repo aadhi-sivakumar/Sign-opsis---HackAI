@@ -15,7 +15,7 @@ ASL Citizen: Provides alphabet videos + metadata in CSV format.
 
 WLASL: A larger collection with glosses and metadata in JSON.
 
-To animate the hands, we used MediaPipe to extract 2D hand keypoints (x, y) frame-by-frame from both sign language videos and static alphabet images. Before that, we used OpenCV (cv2) to identify and create point locations for each joint of the hand. These joint points were then passed into MediaPipe’s hand landmark model to form a connected, structured hand skeleton. This multi-step approach allowed for greater control and customization over how the hand movements were visualized. However, it was a challenge to precisely align the output of cv2 with MediaPipe’s landmark expectations, especially when dealing with noisy video data or varying hand poses.
+To animate the hands, we used MediaPipe to extract 2D hand keypoints (x, y) frame-by-frame from both sign language videos and static alphabet images. Before that, we used OpenCV (cv2) to identify and create point locations for each joint of the hand and connect the points using lines. This allowed for greater control and customization over how the hand movements were visualized. However, it was a challenge to precisely align the output of cv2, especially when dealing with varying hand poses.
 
 These hand keypoints were saved in a structured coordinates.json, which can be played back by a hand model or used to animate a 2D hand.
 
